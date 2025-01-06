@@ -2,8 +2,7 @@
 
 ## Overview
 
-This repository contains a proof-of-concept (PoC) exploit that allows anyone to use a valid csrf token to upload file to `/filemanager/upload` endpoint.
-
+This repository contains a proof-of-concept (PoC) exploit that allows anyone to use a valid csrf token to upload file to `/filemanager/upload` endpoint. It allows users to upload files to a target server that requires a CSRF token for authentication. It retrieves the CSRF token from the server and uses it to perform a file upload via a multipart/form-data POST request. If the CSRF token cannot be automatically retrieved, the user will be prompted to enter it manually.
 
 ## Usage
 
